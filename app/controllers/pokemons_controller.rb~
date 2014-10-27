@@ -1,0 +1,30 @@
+class PokemonsController < ApplicationController
+    def capture
+	p = Pokemon.find(params[:id])
+	p.trainer_id = current_trainer.id
+	#@pokemon.update_attribute(:trainer_id, current_trainer.id)
+	p.save
+        redirect_to root_path 
+    end 
+	
+   def damage
+	p = Pokemon.find(params[:id])
+	t = p.trainer_id
+	p.health = p.health-10
+	if p.health <= 0
+		p.destroy 	
+	else
+		p.save
+	end
+        redirect_to trainer_path(t)
+   end 
+
+   def create
+	@pokemon = Pokemon.new
+	@pokemon.health = 100 
+	@pokemon.level = 1
+	@pokemon.trainer_id = current_trainer.id
+	@pokemon.save
+	redirect_to current_trainer
+	
+end
