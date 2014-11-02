@@ -4,22 +4,41 @@
 <% if(@trainer.id == current_trainer.id)%>
 	<p> <%= button_to "Create Pokemon", new_pokemon_path, :class => "button medium", :method => :get%>
 </p>   
-<% end %>       
+<% end %>  
+
+  <% if flash[:notice] %>
+    <div class="notice"><%= flash[:notice] %></div>
+  <% end %>     
+
 <p>
  <% if @trainer.pokemons.length > 0 %> 
         <h4>Pokemons:</h4>
           <ul>
           <% @trainer.pokemons.each do |pokemon| %>
-          	<% if(current_trainer.id != @trainer.id &&pokemon.health <= 0)%>
+
+          	<% if(current_trainer.id != @trainer.id && pokemon.health <= 0)%>
           	<% else %>
-              <li><%= pokemon.name %>: <b>Level </b> <%= pokemon.level %> <b>Health </b> <%= pokemon.health %>   <%= button_to "Damage", damage_path(id: pokemon), :class => "button medium", :method => :patch %>
-             <% if(@trainer.id == current_trainer.id)%>
-              	 <%= button_to "Heal", heal_path(id: pokemon), :class => "button medium", :method => :patch %>
-              <% end %>
+              <li><%= pokemon.name %> <b>Level </b> <%= pokemon.level %> <b>Health </b> <%= pokemon.health %>  
+
+                <%=simple_form_for Pokemon.new, 
+                    :url => damage_path(:victim => pokemon.id),
+                    :method => :patch do |g|%>
+
+                    <%=g.input :id, collection: Pokemon.where(trainer_id: current_trainer.id), label: false, 
+                    :include_blank => false%>
+                    <%=g.button :submit, 'Attack'%>
+                <%end%>
+
+
+            <% end %>   <!--- END TEH IF CURRENT TRAINER.ID != ...  -->
+
+            <% if(@trainer.id == current_trainer.id)%>
+                <%= button_to "Heal", heal_path(id: pokemon), :class => "button medium", :method => :patch %>
+            <% end %>
 
 			</li>    
-    		<% end%>      
-	  <% end %>
+    		<% end%>  <!---end the do loop -->      
+	  <% end %>   <!---end the if @trainers.pokemons.length -->
           </ul>
- <% end %>
+ 
 </p>

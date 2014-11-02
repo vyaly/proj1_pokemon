@@ -7,12 +7,18 @@ class PokemonsController < ApplicationController
         redirect_to root_path 
     end 
 	
-   def damage
-	p = Pokemon.find(params[:id])
-	p.health = p.health-10
-	p.save
-	redirect_to trainer_path(p.trainer_id)
-   end 
+	def damage
+	@p= Pokemon.find(params[:victim])
+	@e = Pokemon.find(params[:pokemon][:id])
+	if @p.health > 0
+		@p.health -= 10
+	end
+	@p.save
+	@e.level += 1	
+	@e.save
+	flash[:notice] = @p.name + " has been attacked by " + @e.name
+	redirect_to trainer_path(@p.trainer_id)
+   end
 
     def heal
 	p = Pokemon.find(params[:id])
@@ -22,6 +28,7 @@ class PokemonsController < ApplicationController
    end 
 
    def new 
+   		@pokemon = Pokemon.new
    end
 
 

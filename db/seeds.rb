@@ -11,6 +11,10 @@
   Pokemon.create name: name, level: rand(1..20), health: 100
 end
 
+%w(RandoPokemon Abra Magikarp).each do |name|
+Pokemon.create name: name, level: rand(1..50), health: 100, trainer_id: 1
+end
+
 # Make other trainers
 %w(Ash Gary Misty Brock).each do |name|
   Trainer.create name: name, email: name+"@pokeportal.com", password: 'password'
